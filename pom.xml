@@ -22,7 +22,12 @@
     <url>git@github.com/forcedotcom/wsc</url>
   </scm>
   <developers>
-    <!-- see mailing list -->
+    <developer>
+      <name>Enterprise API Team</name>
+      <email>apiscrumteam@salesforce.com</email>
+      <organization>Salesforce</organization>
+      <organizationUrl>https://www.salesforce.com</organizationUrl>
+    </developer>
   </developers>
   <mailingLists>
     <mailingList>
