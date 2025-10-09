@@ -164,6 +164,12 @@ public class ConnectorConfig {
     private String ntlmDomain;
 	private TransportFactory transportFactory;
 	  private SSLContext sslContext;
+
+    // OAuth fields
+    private String clientId;
+    private String clientSecret;
+    private String tokenEndpoint;
+    
     public static final ConnectorConfig DEFAULT = new ConnectorConfig();
 
     static {
@@ -563,5 +569,31 @@ public class ConnectorConfig {
 
     private static boolean javaVersionHasABug() {
         return JavaVersion.javaVersionHasABug(System.getProperty(JavaVersion.JAVA_VERSION_PROPERTY));
+    }
+
+    // OAuth getter and setter methods
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getTokenEndpoint() {
+        return tokenEndpoint;
+    }
+
+    public void setTokenEndpoint(String tokenEndpoint) {
+        this.tokenEndpoint = tokenEndpoint;
     }
 }
