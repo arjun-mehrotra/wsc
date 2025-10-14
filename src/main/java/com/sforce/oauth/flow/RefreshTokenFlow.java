@@ -28,26 +28,27 @@ package com.sforce.oauth.flow;
 
 import com.sforce.oauth.exception.OAuthException;
 import com.sforce.oauth.model.OAuthTokenResponse;
-import com.sforce.oauth.util.OAuthUtil;
 import com.sforce.ws.ConnectionException;
 import com.sforce.ws.ConnectorConfig;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implements the OAuth 2.0 Client Credentials Flow for authentication. It exchanges the client's ID and secret directly
- * for an access token at the authorization server's token endpoint.
+ * Implements the OAuth 2.0 Refresh Token Flow for authentication. It exchanges a refresh token
+ * for a new access token at the authorization server's token endpoint.
  */
-public class ClientCredentialsFlow extends AbstractOAuthFlow {
+public class RefreshTokenFlow extends AbstractOAuthFlow {
 
-    private static final String GRANT_TYPE = "client_credentials";
+    private static final String GRANT_TYPE = "refresh_token";
 
     @Override
     public OAuthTokenResponse getToken(ConnectorConfig config) throws OAuthException, ConnectionException {
         if (!isConfigValid(config)) {
-            throw new OAuthException("Invalid OAuth configuration: missing required parameters (client_id, client_secret, or token_endpoint)");
+            throw new OAuthException("Invalid OAuth configuration: missing required parameters (client_id, token_endpoint, or refresh_token)");
         }
+
         try {
             final Map<String, String> requestHeaders = createHeaders(config);
             final String requestBody = createRequestBody(config);
@@ -58,7 +59,7 @@ public class ClientCredentialsFlow extends AbstractOAuthFlow {
         } catch (IOException ex) {
             throw new ConnectionException("Error establishing token request connection with error", ex);
         } catch (Exception ex) {
-            throw new ConnectionException("An unexpected error occurred during the OAuth flow", ex);
+            throw new ConnectionException("An unexpected error occurred during the OAuth refresh token flow", ex);
         }
     }
 
@@ -69,25 +70,34 @@ public class ClientCredentialsFlow extends AbstractOAuthFlow {
         }
 
         String clientId = config.getClientId();
-        String clientSecret = config.getClientSecret();
         String tokenEndpoint = config.getTokenEndpoint();
+        String refreshToken = config.getRefreshToken();
 
         return clientId != null && !clientId.trim().isEmpty() &&
-                clientSecret != null && !clientSecret.trim().isEmpty() &&
-                tokenEndpoint != null && !tokenEndpoint.trim().isEmpty();
+                tokenEndpoint != null && !tokenEndpoint.trim().isEmpty() &&
+                refreshToken != null && !refreshToken.trim().isEmpty();
     }
 
     @Override
     protected String createRequestBody(ConnectorConfig config) {
-        return "grant_type=" + GRANT_TYPE;
+        StringBuilder body = new StringBuilder();
+
+        body.append("grant_type=").append(GRANT_TYPE);
+        body.append("&refresh_token=").append(config.getRefreshToken());
+        body.append("&client_id=").append(config.getClientId());
+
+        String clientSecret = config.getClientSecret();
+        if (clientSecret != null && !clientSecret.trim().isEmpty()) {
+            body.append("&client_secret=").append(clientSecret);
+        }
+        return body.toString();
     }
 
     @Override
     protected Map<String, String> createHeaders(ConnectorConfig config) {
-        Map<String, String> requestHeaders = new java.util.HashMap<>();
+        Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put(CONTENT_TYPE_HEADER, "application/x-www-form-urlencoded");
         requestHeaders.put(ACCEPT_HEADER, "application/json");
-        requestHeaders.put(AUTHORIZATION_HEADER, OAuthUtil.buildBasicAuthHeader(config.getClientId(), config.getClientSecret()));
         return requestHeaders;
     }
 }

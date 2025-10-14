@@ -47,6 +47,7 @@ public class OAuthTokenResponseTest {
     private static final String FULL_RESPONSE_JSON =
             "{" +
                     "\"access_token\":\"sample_token_12345\"," +
+                    "\"refresh_token\":\"sample_refresh_token_7890\"," +
                     "\"token_type\":\"Bearer\"," +
                     "\"scope\":\"id profile api\"," +
                     "\"instance_url\":\"https://na1.salesforce.com\"," +
@@ -74,6 +75,7 @@ public class OAuthTokenResponseTest {
 
         assertNotNull(response);
         assertEquals("sample_token_12345", response.getAccessToken());
+        assertEquals("sample_refresh_token_7890", response.getRefreshToken());
         assertEquals("Bearer", response.getTokenType());
         assertEquals("id profile api", response.getScope());
         assertEquals("https://na1.salesforce.com", response.getInstanceUrl());
@@ -104,6 +106,8 @@ public class OAuthTokenResponseTest {
 
         assertTrue("Access token should be masked", result.contains("accessToken='*******************'"));
         assertFalse("Access token should not be written out", result.contains("sample_token_12345"));
+        assertTrue("Refresh token should be masked", result.contains("refreshToken='*******************'"));
+        assertFalse("Refresh token should not be written out", result.contains("sample_refresh_token_7890"));
         assertTrue("Signature should be masked", result.contains("signature='*******************'"));
         assertFalse("Signature token should not be written out", result.contains("signature_hash_xyz"));
     }
