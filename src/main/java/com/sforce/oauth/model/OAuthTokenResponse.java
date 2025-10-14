@@ -29,9 +29,12 @@ package com.sforce.oauth.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OAuthTokenResponse {
- 
+
     @JsonProperty("access_token")
     private String accessToken;
+
+    @JsonProperty("refresh_token")
+    private String refreshToken;
 
     @JsonProperty("token_type")
     private String tokenType;
@@ -50,7 +53,7 @@ public class OAuthTokenResponse {
 
     @JsonProperty("signature")
     private String signature;
-    
+
     public OAuthTokenResponse() {
     }
 
@@ -82,10 +85,15 @@ public class OAuthTokenResponse {
         return signature;
     }
 
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
     @Override
     public String toString() {
         return "OAuthTokenResponse{" +
                 "accessToken='" + (accessToken != null ? "*******************" : null) + '\'' +
+                ", refreshToken='" + (refreshToken != null ? "*******************" : null) + '\'' +
                 ", tokenType='" + tokenType + '\'' +
                 ", scope='" + scope + '\'' +
                 ", instanceUrl='" + instanceUrl + '\'' +

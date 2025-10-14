@@ -169,6 +169,7 @@ public class ConnectorConfig {
     private String clientId;
     private String clientSecret;
     private String tokenEndpoint;
+    private String refreshToken;
     
     public static final ConnectorConfig DEFAULT = new ConnectorConfig();
 
@@ -595,5 +596,13 @@ public class ConnectorConfig {
 
     public void setTokenEndpoint(String tokenEndpoint) {
         this.tokenEndpoint = tokenEndpoint;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
